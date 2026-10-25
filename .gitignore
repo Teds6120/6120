@@ -1,0 +1,9 @@
+.DS_Store
+# 公開しないもの（バックアップ・作業用・SNS配布物）
+original/
+dl-*/
+_backup*/
+*.mp4
+tedsart_short_cover.jpg
+README.md
+.vercel
