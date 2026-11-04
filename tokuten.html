@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="公式LINE友だち追加特典。自分のお店のAI相談窓口を作るための3つのプロンプト。ChatGPT・Claude・Geminiにそのまま貼って使えます。TEDS ART">
+<meta name="theme-color" content="#171A2E">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="TEDS ART">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://tedsart.vercel.app/tokuten.html">
+<link rel="canonical" href="https://tedsart.vercel.app/tokuten.html">
+<link rel="icon" href="favicon.png">
+<meta property="og:title" content="LINE AI窓口を作るプロンプト、3つ。｜TEDS ART">
+<meta property="og:description" content="うちが実際に使っているものを、業種を抜いてそのまま公開します。">
+<title>LINE AI窓口を作るプロンプト、3つ。｜TEDS ART</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF6; --surface:#FFFFFF; --code:#F4F1EC;
+    --ink:#1C1E2E; --ink-soft:#5C6076; --rule:#E5E1D8;
+    --amber:#C4761A; --amber-ink:#8A5210; --amber-wash:#FAEEDC;
+    --green:#06C755;
+    --night:#171A2E; --night-2:#242844; --night-ink:#EFEDF6;
+    --night-soft:#9AA0BE; --night-rule:#333858;
+    --display:"Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif;
+    --body:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+    --mono:"Roboto Mono",ui-monospace,monospace;
+    --wrap:min(760px,100% - 2.2rem);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#111220; --surface:#1A1C2C; --code:#141623;
+      --ink:#ECEAF3; --ink-soft:#A3A7BE; --rule:#2C2F44;
+      --amber:#F0A845; --amber-ink:#F5BE71; --amber-wash:#2E2415;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#111220; --surface:#1A1C2C; --code:#141623;
+    --ink:#ECEAF3; --ink-soft:#A3A7BE; --rule:#2C2F44;
+    --amber:#F0A845; --amber-ink:#F5BE71; --amber-wash:#2E2415;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+       font-size:17px;line-height:1.9;-webkit-font-smoothing:antialiased}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  .wrap{width:var(--wrap);margin-inline:auto}
+  p{margin:0}
+  h1,h2,h3{font-family:var(--display);margin:0;line-height:1.45;text-wrap:balance}
+
+  /* ヘッダー */
+  .hero{background:var(--night);color:var(--night-ink);padding:3rem 0 2.6rem;
+        background-image:radial-gradient(110% 70% at 82% -12%,rgba(240,168,69,.17),transparent 62%)}
+  .badge{display:inline-block;background:#F0A845;color:#241704;font-family:var(--display);
+         font-weight:700;font-size:.78rem;letter-spacing:.14em;padding:.35rem .85rem;border-radius:999px}
+  .hero h1{font-size:clamp(1.7rem,5.6vw,2.4rem);font-weight:900;margin-top:1rem;color:var(--night-ink)}
+  .hero .lede{color:var(--night-soft);margin-top:1rem;font-size:.98rem}
+  .hero .lede b{color:var(--night-ink);font-weight:700}
+
+  section{padding:2.8rem 0}
+  section + section{border-top:1px solid var(--rule)}
+  .stack{display:flex;flex-direction:column;gap:1rem}
+  h2{font-size:clamp(1.25rem,4vw,1.55rem);font-weight:700}
+  h3{font-size:1.02rem;font-weight:700}
+  .lead{color:var(--ink-soft)}
+  strong{font-weight:700;color:var(--ink)}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--amber-ink);
+           text-transform:uppercase}
+
+  /* 使い方 */
+  .steps{display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem}
+  .st{display:flex;gap:.9rem;background:var(--surface);border:1px solid var(--rule);
+      border-radius:12px;padding:.85rem 1rem;align-items:baseline}
+  .st .n{font-family:var(--mono);font-size:.76rem;color:var(--amber-ink);flex:none}
+  .st .t{font-size:.95rem;line-height:1.75}
+  .st .t b{font-weight:700}
+
+  /* プロンプトカード */
+  .pcard{background:var(--surface);border:1px solid var(--rule);border-radius:16px;
+         overflow:hidden;margin-top:.6rem}
+  .pcard.key{border-color:var(--amber);border-width:2px}
+  .ph{padding:1.1rem 1.2rem .9rem;display:flex;flex-direction:column;gap:.4rem;
+      border-bottom:1px solid var(--rule)}
+  .ph .no{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--amber-ink)}
+  .ph h3{font-size:1.12rem}
+  .ph .d{font-size:.88rem;color:var(--ink-soft);line-height:1.75}
+  .pbar{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+        padding:.7rem 1.2rem;background:var(--amber-wash)}
+  .pbar .hint{font-size:.78rem;color:var(--amber-ink);font-weight:700}
+  .cbtn{font-family:var(--display);font-weight:700;font-size:.88rem;cursor:pointer;
+        background:var(--night);color:#fff;border:0;border-radius:999px;padding:.55rem 1.15rem;
+        transition:transform .12s ease,opacity .12s ease;white-space:nowrap}
+  .cbtn:hover{transform:translateY(-1px)}
+  .cbtn:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+  .cbtn.ok{background:var(--green);color:#04331B}
+  pre{margin:0;padding:1.1rem 1.2rem 1.3rem;background:var(--code);color:var(--ink);
+      font-family:var(--body);font-size:.85rem;line-height:1.85;
+      white-space:pre-wrap;word-break:break-word;max-height:26rem;overflow:auto;
+      -webkit-user-select:text;user-select:text}
+
+  /* 注意 */
+  .note{background:var(--surface);border-left:4px solid var(--amber);border:1px solid var(--rule);
+        border-left-width:4px;border-radius:4px 12px 12px 4px;padding:1.1rem 1.2rem;
+        display:flex;flex-direction:column;gap:.55rem}
+  .note h3{font-size:1rem}
+  .note p{font-size:.9rem;color:var(--ink-soft);line-height:1.8}
+  .note p b{color:var(--ink)}
+
+  ul.checks{margin:0;padding:0}
+  ul.checks li{list-style:none;display:flex;gap:.55rem;font-size:.92rem;line-height:1.8;
+               margin-bottom:.4rem;color:var(--ink-soft)}
+  ul.checks li b{color:var(--ink);font-weight:700}
+  .mk{flex:none;font-family:var(--mono);font-size:.78rem;color:var(--amber-ink);padding-top:.25rem}
+
+  .cta{background:var(--night);color:var(--night-ink);padding:2.8rem 0;text-align:center}
+  .cta h2{color:var(--night-ink)}
+  .cta p{color:var(--night-soft);font-size:.93rem;margin-top:.9rem}
+  .cta .brand{font-family:var(--display);font-weight:900;font-size:1.7rem;letter-spacing:.06em;
+              margin-top:1.6rem;color:var(--night-ink)}
+  footer{padding:1.8rem 0 2.6rem;font-size:.8rem;color:var(--ink-soft);line-height:1.9}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <span class="badge">友だち追加 特典</span>
+    <h1>LINE AI窓口を作る<br>プロンプト、3つ。</h1>
+    <p class="lede">
+      うちが実際に使っているものを、業種を抜いてそのまま公開します。<br>
+      <b>ChatGPTでもClaudeでも、貼り付ければ今日から動きます。</b>
+    </p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap stack">
+    <p class="eyebrow">how to use</p>
+    <h2>使い方は3つだけ</h2>
+    <div class="steps">
+      <div class="st"><span class="n">1</span><span class="t"><b>プロンプト①</b>を貼る。AIが質問してくるので、答えていくだけで<b>お店の資料</b>ができます。</span></div>
+      <div class="st"><span class="n">2</span><span class="t"><b>プロンプト③</b>で、その資料に穴がないか確かめます。</span></div>
+      <div class="st"><span class="n">3</span><span class="t"><b>プロンプト②</b>の空欄を埋めて、①でできた資料とセットで使います。これがAIの中身です。</span></div>
+    </div>
+    <p class="lead">
+      使うのは <strong>ChatGPT、Claude、Geminiのどれでも</strong> 構いません。無料版でも試せます。
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack">
+    <p class="eyebrow">prompt 01</p>
+    <h2>お店の資料を作らせる</h2>
+    <p class="lead">
+      いちばん大事なのは、AIの賢さではなく<strong>読ませる資料</strong>です。
+      ここを自分でゼロから書くのは大変なので、AIに質問させて、答えるだけで完成する形にしています。
+    </p>
+
+    <div class="pcard key">
+      <div class="ph">
+        <span class="no">PROMPT 01</span>
+        <h3>ナレッジベース作成インタビュー</h3>
+        <p class="d">貼り付けると、AIが1問ずつ聞いてきます。20〜30分で資料ができます。</p>
+      </div>
+      <div class="pbar">
+        <span class="hint">↓ このまま全部コピーして貼り付け</span>
+        <button class="cbtn" onclick="cp('p1',this)">コピー</button>
+      </div>
+      <pre id="p1">あなたは、小さなお店の「LINE AI相談窓口」に読ませる資料（ナレッジベース）を、
+私から聞き取って作る担当者です。
+
+【前提】
+私はITにくわしくありません。専門用語を使わず、やさしい言葉で進めてください。
+
+【進め方】
+・質問は必ず1回に1つだけにしてください。私が答えたら、次の質問に進みます。
+・まとめて何個も聞かないでください。
+・私の答えが足りないときは、例を出して聞き直してください。
+　例：「営業時間を教えてください（例：10:00〜19:00）」
+・私が「わからない」「あとで」と答えたら、飛ばして次に進み、
+　最後に「未記入リスト」としてまとめてください。
+・全部で20問くらいを目安にしてください。
+
+【聞く順番】
+1. お店の名前と、何をしているお店か
+2. 住所・電話・営業時間・定休日・駐車場の有無
+3. 商品やサービスの名前、内容、所要時間、料金（税込か税別かも）
+4. セットや割引がある場合は、割引後の金額そのもの
+5. 予約や申し込みの方法（URLがあれば）
+6. お客様から実際によく聞かれる質問（最低5つ）
+7. AIに絶対に答えさせたくないこと（例：返金、値引き、個別の日程調整）
+
+【6番を聞くときの注意】
+「よくある質問を想像で書かないでください」と私に伝えてください。
+実際に届いたLINE・DM・電話の質問を思い出してもらい、
+お客様が使った言葉のまま教えてもらってください。
+「料金について」ではなく「だいたいいくらくらいかかりますか？」の形です。
+
+【あなたが絶対に守ること】
+・金額は、私が言った数字だけを使ってください。あなたが計算してはいけません。
+・「10%引き」ではなく、割引後の金額そのものを私に聞いてください。
+・「〜から」という下限の言い方は使わないでください。
+・私が言っていないことを、それらしく補わないでください。
+　わからないことは「未記入」と書いてください。
+
+【聞き取りが終わったら】
+下の形式でまとめて出力してください。表や装飾は使わず、この形のままで書いてください。
+
+------------------------------
+最終更新: （今日の日付） / 料金は（　）時点・（税込／税別）
+
+■ 基本情報
+名称:
+所在地:
+電話:（受付時間:　）
+営業時間:
+定休日:
+駐車場:
+サイト:
+
+■ どんなお店か
+（3行）
+
+■ サービス・商品と料金
+（名称／内容／所要時間／料金／対象になる人・ならない人）
+※金額は全パターン書き出すこと。割引後の金額まで書くこと。
+
+■ 予約・申し込みの方法
+（どこから／どうやって／URL）
+※住所や氏名をLINEで聞き出さないこと。必ずフォームに入力していただくこと。
+
+■ よくある質問
+Q （お客様が使った言葉のまま）
+A （3〜5行）
+
+■ 答え方のルール
+・（　）は資料にあるので、必ず答えること。「担当者へ」と逃げないこと。
+・（　）については、（ここまで）は答え、（ここから先）は担当者へおつなぎすること。
+・数字の計算はしないこと。上の表の数字をそのまま伝えること。
+
+■ 答えてはいけないこと（担当者へおつなぐ）
+※ここに書いていない話題は、必ず資料をもとに答えること。
+※話題そのものを避けないこと。答えられない部分だけを切り分けること。
+・
+・
+------------------------------
+
+最後に「未記入リスト」を出して、
+私が後から埋めるべき項目を教えてください。
+
+では、1問目からお願いします。</pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack">
+    <p class="eyebrow">prompt 02</p>
+    <h2>AIのふるまいを決める</h2>
+    <p class="lead">
+      うちが実際に動かしているものです。
+      <strong>（　）の中を自分のお店に置き換えて</strong>、①でできた資料と一緒に使ってください。
+    </p>
+
+    <div class="pcard">
+      <div class="ph">
+        <span class="no">PROMPT 02</span>
+        <h3>相談窓口の人格・回答ルール</h3>
+        <p class="d">失敗して直したところを、そのまま残してあります。とくに「数字」と「境界」の部分です。</p>
+      </div>
+      <div class="pbar">
+        <span class="hint">↓ （　）を埋めてから使う</span>
+        <button class="cbtn" onclick="cp('p2',this)">コピー</button>
+      </div>
+      <pre id="p2">あなたは「（お店の名前）」のLINE相談窓口、通称「（呼び名）」です。
+（どんなお客様か。例：はじめて来店を考えている30〜50代の方）からの質問に答えます。
+
+【話し方】
+・少し先輩のスタッフのように、親しみやすく丁寧に。えらそうにしない。
+・LINEなので短く。3〜5行を目安にし、長文は避ける。
+・相手は遠慮しがちです。「いつでも聞いてくださいね」と何度でも伝える。
+・箇条書きは3項目まで。絵文字は1メッセージに1〜2個まで。
+・自分がAIであることを隠さない。聞かれたら正直に答える。
+
+【いちばん大事なルール】
+・下の資料に書いてあることは、必ず答えてください。
+　「担当者へ」と言って逃げてはいけません。
+・資料に書いていないことだけ、「担当者より正確にご案内しますね」と伝えて止まる。
+・話題そのものを避けないこと。答えられない部分だけを切り分けて伝える。
+　例：「営業時間は10時から19時です。貸切ができるかどうかは担当者からご案内しますね」
+
+【数字のルール】
+・足し算、割引、按分などの計算は一切しないこと。
+　資料の表にある数字を、そのまま伝えること。
+・表にない金額を聞かれたら、計算せず「担当者からご案内します」と伝えること。
+・変動する費用には必ず「約」を付け、断定しないこと。
+・「〜円から」という下限の言い方は絶対にしないこと。
+　金額を伝えるときは「どの商品を・どの条件で」をセットで言うこと。
+　良い例：「（商品名）を（条件）でお選びいただくと、約（　）円です」
+　悪い例：「（　）円から利用できます」
+
+【言ってはいけないこと】
+・「たぶん大丈夫です」「きっと通ります」など、見込みや保証を言わないこと。
+　確認できる事実だけを伝えること。
+・他店との比較や優劣を言わないこと。
+・資料にない割引やキャンペーンを作らないこと。
+
+【個人情報】
+・住所、氏名、電話番号をこのLINEで聞き出さないこと。
+　必要なときは、必ず下のフォームに入力していただくこと。
+　フォームURL: （　）
+
+【最後の案内】
+・会話の終わりは、自然に（予約／来店／申し込み）の案内につなげること。
+・案内するときは、次の2つを必ず添えること。
+　1) （その場で日時を選べる、など手軽さが伝わる一言）
+　2) （24時間受付、折り返しを待たなくていい、など）
+　URL: （　）
+・日程調整そのものはあなたにはできません。無理に受けようとしないこと。
+
+===== 資料ここから =====
+（ここに、プロンプト①で作った資料を全部貼り付ける）
+===== 資料ここまで =====</pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack">
+    <p class="eyebrow">prompt 03</p>
+    <h2>公開前に、穴を見つける</h2>
+    <p class="lead">
+      いちばんよく起きる失敗は、<strong>当たり前すぎることを書き忘れる</strong>ことです。
+      うちは「合格率はどのくらいですか」に答えられませんでした。毎日話していることほど、資料に書き忘れます。
+    </p>
+
+    <div class="pcard">
+      <div class="ph">
+        <span class="no">PROMPT 03</span>
+        <h3>20問テスト</h3>
+        <p class="d">資料を渡すと、答えられない質問を洗い出してくれます。公開前に必ず一度。</p>
+      </div>
+      <div class="pbar">
+        <span class="hint">↓ ①の資料を貼ってから実行</span>
+        <button class="cbtn" onclick="cp('p3',this)">コピー</button>
+      </div>
+      <pre id="p3">下に、あるお店の「AI相談窓口用の資料」を貼ります。
+この資料に穴がないかを確かめたいので、次の作業をしてください。
+
+【作業1】
+実際のお客様が送ってきそうな質問を20個つくってください。
+・想像上のきれいな質問ではなく、口語で、短く、雑に書いてください。
+　例：「駐車場ありますか？」「日曜やってます？」「はじめてでも平気ですか」
+・料金、時間、場所、予約、はじめての人の不安、支払い方法を必ず含めてください。
+・「また連絡してもいいですか」のような、遠慮の言葉も1つ入れてください。
+
+【作業2】
+その20問それぞれについて、この資料だけで答えられるかを判定し、
+次の3つに分けて一覧にしてください。
+
+A：資料に書いてあるので答えられる
+B：資料に書いていないので答えられない ← ここが穴です
+C：資料の書き方があいまいで、間違って伝わる恐れがある
+
+【作業3】
+Bに入った質問について、資料のどこに何を書き足せばよいかを、
+書き足す文章そのものの形で提案してください。
+
+【作業4】
+Cに入った項目について、なぜ誤解されるのかと、
+どう書き直せばよいかを教えてください。
+とくに次の書き方があれば必ず指摘してください。
+・「〜から」という下限の表記
+・「最短」「必ず」など、確約に読める表現
+・社内向けのメモをそのまま貼ったような文
+・計算しないと答えが出ない金額
+
+【判定のときの注意】
+・あなたが推測で補って「答えられる」と判定しないでください。
+　資料に文字として書いていなければ、Bです。
+・厳しめに判定してください。
+
+===== 資料ここから =====
+（ここに、プロンプト①で作った資料を貼り付ける）
+===== 資料ここまで =====</pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack">
+    <p class="eyebrow">before you start</p>
+    <h2>先に知っておいてほしいこと</h2>
+
+    <div class="note">
+      <h3>このプロンプトだけでは、LINEには入りません</h3>
+      <p>
+        ここで作れるのは<b>AIの中身</b>です。ChatGPTやClaudeの画面では、そのまますぐ試せます。<br>
+        実際にLINE公式アカウントにつないで24時間動かすには、別途つなぎ込みの作業が必要です。
+        そこは<b>正直にお伝えしておきます。</b>
+      </p>
+    </div>
+
+    <h3 style="margin-top:1rem">よくつまずくところ</h3>
+    <ul class="checks">
+      <li><span class="mk">1</span><span><b>禁止する言葉を広くしすぎない。</b>「就職」を禁止にしたら、進路の話ごと拒否するようになりました。話題を止めるのではなく、境界を書いてください。</span></li>
+      <li><span class="mk">2</span><span><b>数字は計算させない。</b>都度計算させると、正しいときと数千円ずれるときが混ざります。答えを表にして持たせてください。</span></li>
+      <li><span class="mk">3</span><span><b>社内メモをそのまま貼らない。</b>「下限3,000円」と書いたら「3,000円から通えます」と案内されました。そんな商品はありません。</span></li>
+      <li><span class="mk">4</span><span><b>FAQは想像で書かない。</b>用意したものの半分は使われず、代わりに予想外の質問が来ます。実際のログから書いてください。</span></li>
+    </ul>
+
+    <p class="lead" style="margin-top:.6rem">
+      この4つは、全部うちで実際に起きたことです。
+      技術記事には書かれていない代わりに、<strong>やれば必ず踏みます。</strong>
+    </p>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>うまくいかなかったら、<br>そのまま聞いてください。</h2>
+    <p>
+      「貼ってみたけど、思った答えにならない」<br>
+      その状態のスクリーンショットを送っていただければ、どこが原因か見ます。<br>
+      売り込みはしません。
+    </p>
+    <p style="margin-top:1.6rem"><a href="https://lin.ee/PxVM0IU" style="display:inline-block;background:#06C755;color:#fff;font-family:var(--display);font-weight:700;text-decoration:none;border-radius:999px;padding:.75rem 1.6rem">公式LINEで聞いてみる</a></p>
+    <p class="brand">TEDS ART</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    TEDS ART／鹿児島市東千石町18-7 井上ビル4F<br>
+    このプロンプトは、自由に書き換えてお使いください。転載・再配布のご相談も歓迎します。
+  </div>
+</footer>
+
+<script>
+function cp(id, btn){
+  var el = document.getElementById(id);
+  var txt = el.textContent;
+  var done = function(msg){
+    var old = btn.textContent;
+    btn.textContent = msg;
+    btn.classList.add('ok');
+    setTimeout(function(){ btn.textContent = old; btn.classList.remove('ok'); }, 1800);
+  };
+  var fallback = function(){
+    try{
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      var s = window.getSelection();
+      s.removeAllRanges(); s.addRange(r);
+      if (document.execCommand('copy')) { done('コピーしました'); return; }
+    }catch(e){}
+    done('長押しでコピー');
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function(){ done('コピーしました'); }, fallback);
+  } else {
+    fallback();
+  }
+}
+</script>
+</body>
+</html>
