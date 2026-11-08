@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /dl-
+
+Sitemap: https://tedsart.vercel.app/sitemap.xml
